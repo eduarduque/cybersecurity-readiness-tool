@@ -3,7 +3,7 @@
 import { FormEvent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight, ShieldCheck } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 
 type AnswerValue = "Yes" | "No" | null;
 
@@ -117,6 +117,12 @@ export default function AssessmentPage() {
     setIsSubmitting(true);
 
     try {
+      if (!isSupabaseConfigured || !supabase) {
+        throw new Error(
+          "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY."
+        );
+      }
+
       const normalizedName = name.trim();
       const normalizedEmail = email.trim().toLowerCase();
       const { error: profileError } = await supabase

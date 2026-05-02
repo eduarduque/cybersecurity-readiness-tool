@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import { supabase } from "@/lib/supabase";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import { ADMIN_URL_SECRET } from "@/lib/admin-secret";
 import { dbSchema, profilesTable } from "@/lib/db-config";
 
@@ -26,6 +26,16 @@ function tipForThisWeek(): string {
 
 export async function POST(request: Request) {
   try {
+    if (!isSupabaseConfigured || !supabase) {
+      return NextResponse.json(
+        {
+          error:
+            "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.",
+        },
+        { status: 500 }
+      );
+    }
+
     const body = (await request.json().catch(() => null)) as {
       secret?: string;
     } | null;

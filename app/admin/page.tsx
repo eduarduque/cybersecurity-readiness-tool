@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 import { ADMIN_URL_SECRET } from "@/lib/admin-secret";
 import { dbSchema, profilesTable } from "@/lib/db-config";
 import TriggerWeeklyUpdate from "./trigger-weekly-update";
@@ -42,6 +42,23 @@ export default async function AdminPage({ searchParams }: PageProps) {
           <p className="text-slate-300">
             Add the correct <code>?secret=...</code> query parameter to access
             this page.
+          </p>
+        </section>
+      </main>
+    );
+  }
+
+  if (!isSupabaseConfigured || !supabase) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-slate-950 p-6 text-slate-100">
+        <section className="w-full max-w-xl rounded-xl border border-amber-500/30 bg-slate-900 p-6 shadow-lg">
+          <h1 className="mb-2 text-2xl font-semibold text-amber-300">
+            Supabase Not Configured
+          </h1>
+          <p className="text-slate-300">
+            Set <code>NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
+            <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code> in your deployment
+            environment.
           </p>
         </section>
       </main>
